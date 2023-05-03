@@ -1,0 +1,44 @@
+### get My Pill List
+GET http://localhost:8080/schedule/test1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI5NTgwMDR9.T_ZpEwURaHVpZIcEDUZjXEOsL5CeicmcE9fAyJrrOV8
+
+### 내 영양제 등록
+POST http://localhost:8080/schedule
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI5NTgxNzZ9.rxNMQOeFEQATnurbSpX3Ukp-BRjiheZ1_8yLWXSeGpo
+
+{
+  "productName":"pill1",
+  "customColor":"white"
+}
+
+### 내 영양제 등록
+POST http://localhost:8080/schedule
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI5NTgxNzZ9.rxNMQOeFEQATnurbSpX3Ukp-BRjiheZ1_8yLWXSeGpo
+
+{
+  "productName":"pill2",
+  "customColor":"white"
+}
+
+### 내 영양제 등록
+POST http://localhost:8080/schedule
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI5NDUzMjd9.BL-acRR17wwJmwV07RSFknQq5ne4ahM5-ELLVM7lUfY
+
+{
+  "productName":"pill3",
+  "customColor":"white"
+}
+
+### 영양제 복용 완료 및 기록
+PATCH http://localhost:8080/schedule/week
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI5NTgxNzZ9.rxNMQOeFEQATnurbSpX3Ukp-BRjiheZ1_8yLWXSeGpo
+
+{
+  "productName":"pill1",
+  "usedAt":"2023-04-30T22:54:11"
+}

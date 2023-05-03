@@ -1,0 +1,10 @@
+### 전체 유저 가져오기
+GET http://localhost:8080/v1/findAll
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODI1MjMwNDh9.-KleRR6XBcnExyKbYvg4GIX8rASDnsdcUu5KYgZh8Zk
+Content-Type: application/json
+
+### 유저 단건 조회
+GET http://localhost:8080/v1/findAuth/test1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjcxNjd9.nchdkwC5vNuZiGWBGETPMs9zAXJY2YQxJGQvF6DZdIQ
+Content-Type: application/json
+

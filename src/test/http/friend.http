@@ -1,0 +1,44 @@
+### add v1
+POST http://localhost:8080/friend
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjE1ODF9.1WdOeCji9DzzP54UWgCdy9gmX2L7uBqJZmBJdfgVr9k
+
+{
+  "friendname":"test2"
+}
+
+### add v2
+POST http://localhost:8080/friend/v2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjM4MTh9._Kpj94bEnb4JChhsch5fTVAjZeC1RsO8IyRimLEGpn8
+
+{
+  "friendname":"test3"
+}
+### add friend v2 test4
+POST http://localhost:8080/friend/v2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjMzOTZ9.bw4uAqI_iackykYcYo7OQWAUprCU_a-WvIKdCUySryU
+
+{
+  "friendname":"test4"
+}
+
+### add unregistered friend
+POST http://localhost:8080/friend/v2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjMzOTZ9.bw4uAqI_iackykYcYo7OQWAUprCU_a-WvIKdCUySryU
+
+{
+  "friendname":"test5"
+}
+
+### get friends v1
+GET http://localhost:8080/friend
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjMzOTZ9.bw4uAqI_iackykYcYo7OQWAUprCU_a-WvIKdCUySryU
+
+### get friend v2
+GET http://localhost:8080/friend/v2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODE0MjMzOTZ9.bw4uAqI_iackykYcYo7OQWAUprCU_a-WvIKdCUySryU
