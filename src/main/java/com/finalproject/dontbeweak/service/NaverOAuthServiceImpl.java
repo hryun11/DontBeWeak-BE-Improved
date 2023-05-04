@@ -10,8 +10,8 @@ import com.finalproject.dontbeweak.exception.ErrorCode;
 import com.finalproject.dontbeweak.jwtwithredis.UserResponseDto;
 import com.finalproject.dontbeweak.model.Cat;
 import com.finalproject.dontbeweak.model.Member;
-import com.finalproject.dontbeweak.model.NaverProfile;
-import com.finalproject.dontbeweak.model.OAuthToken;
+import com.finalproject.dontbeweak.model.oauth.NaverProfile;
+import com.finalproject.dontbeweak.model.oauth.OAuthToken;
 import com.finalproject.dontbeweak.repository.CatRepository;
 import com.finalproject.dontbeweak.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,11 +48,11 @@ public class NaverOAuthServiceImpl implements OAuthService{
     private static final String BEARER_TYPE = "Bearer ";
 
     @Override
-    public SocialLoginInfoDto requestOAuth(String code, HttpServletResponse response) {
+    public SocialLoginInfoDto requestOAuthLogin(String code, HttpServletResponse response) {
 
         OAuthToken oAuthToken = requestOAuthToken(code);
 
-        NaverProfile naverProfile = requestProfile(oAuthToken);
+        NaverProfile naverProfile = requestOAuthProfile(oAuthToken);
 
         Member naverMember = Member.builder()
                 .username("Naver_"+naverProfile.getResponse().getId())
@@ -81,31 +81,13 @@ public class NaverOAuthServiceImpl implements OAuthService{
         * */
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-        System.out.println("getAccessToken() = " + tokenInfo.getAccessToken());
-        System.out.println("getRefreshToken() = " + tokenInfo.getRefreshToken());
-        log.info("Access Token, Refresh Token 생성 완료");
-
-        // redis에 refresh token 저장(
-        redisTokenStore.opsForValue().set(
-                REFRESH_TOKEN_KEY+authentication.getName(),
-                tokenInfo.getRefreshToken(),
-                tokenInfo.getRefreshTokenExpirationTime(),
-                TimeUnit.MILLISECONDS
-        );
-        log.info("Redis 저장소에 Refresh Token 저장 완료");
-
-        response.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE+tokenInfo.getAccessToken());
-        log.info("Access Token : {}", BEARER_TYPE+tokenInfo.getAccessToken());
+        generateToken(response, authentication);
 
         String nickname = naverMember.getNickname();
-        return new SocialLoginInfoDto(
-                username, nickname
-        );
+        return new SocialLoginInfoDto(username, nickname);
     }
 
-    @Override
-    public OAuthToken requestOAuthToken(String code) {
+    private OAuthToken requestOAuthToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -143,7 +125,7 @@ public class NaverOAuthServiceImpl implements OAuthService{
         return oAuthToken;
     }
 
-    private NaverProfile requestProfile(OAuthToken oAuthToken) {
+    private NaverProfile requestOAuthProfile(OAuthToken oAuthToken) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -171,9 +153,7 @@ public class NaverOAuthServiceImpl implements OAuthService{
         return naverProfile;
     }
 
-
-    @Override
-    public void signUpOAuthMember(Member member) {
+    private void signUpOAuthMember(Member member) {
         String encodePassword = passwordEncoder.encode(member.getPassword());
 
         Member newOAuthMember = Member.builder()
@@ -188,5 +168,25 @@ public class NaverOAuthServiceImpl implements OAuthService{
 
         Cat cat = new Cat(newOAuthMember, "firstCatImage");
         catRepository.save(cat);
+    }
+
+    private void generateToken(HttpServletResponse response, Authentication authentication) {
+        UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        System.out.println("getAccessToken() = " + tokenInfo.getAccessToken());
+        System.out.println("getRefreshToken() = " + tokenInfo.getRefreshToken());
+        log.info("Access Token, Refresh Token 생성 완료");
+
+        // redis에 refresh token 저장(
+        redisTokenStore.opsForValue().set(
+                REFRESH_TOKEN_KEY + authentication.getName(),
+                tokenInfo.getRefreshToken(),
+                tokenInfo.getRefreshTokenExpirationTime(),
+                TimeUnit.MILLISECONDS
+        );
+        log.info("Redis 저장소에 Refresh Token 저장 완료");
+
+        response.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE+tokenInfo.getAccessToken());
+        log.info("Access Token : {}", BEARER_TYPE + tokenInfo.getAccessToken());
     }
 }

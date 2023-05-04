@@ -7,9 +7,7 @@ import com.finalproject.dontbeweak.jwtwithredis.Helper;
 import com.finalproject.dontbeweak.jwtwithredis.Response;
 import com.finalproject.dontbeweak.jwtwithredis.UserResponseDto;
 import com.finalproject.dontbeweak.model.Member;
-import com.finalproject.dontbeweak.service.KakaoService;
-import com.finalproject.dontbeweak.service.NaverService;
-import com.finalproject.dontbeweak.service.MemberService;
+import com.finalproject.dontbeweak.service.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +29,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final KakaoService kakaoService;
-    private final NaverService naverService;
+    private final KakaoOAuthServiceImpl kakaoOAuthService;
+    private final NaverOAuthServiceImpl naverOAuthService;
 
     // 로그인 페이지
     @GetMapping("/login")
@@ -97,14 +95,14 @@ public class MemberController {
     @GetMapping("/auth/kakao/callback")
     @ApiOperation(value = "카카오 소셜 로그인")
     public @ResponseBody SocialLoginInfoDto kakaoCallback(String code, HttpServletResponse response) {      //ResponseBody -> Data를 리턴해주는 컨트롤러 함수
-        return kakaoService.requestKakao(code, response);
+        return kakaoOAuthService.requestOAuthLogin(code, response);
     }
 
     //네이버 소셜 로그인
     @GetMapping("/auth/naver/callback")
     @ApiOperation(value = "네이버 소셜 로그인")
     public @ResponseBody SocialLoginInfoDto naverCallback(String code, HttpServletResponse response){
-        return naverService.requestNaver(code, response);
+        return naverOAuthService.requestOAuthLogin(code, response);
     }
 
     //로그인 유저 정보

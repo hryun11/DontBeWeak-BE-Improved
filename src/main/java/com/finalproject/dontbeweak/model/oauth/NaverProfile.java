@@ -1,4 +1,4 @@
-package com.finalproject.dontbeweak.model;
+package com.finalproject.dontbeweak.model.oauth;
 
 import lombok.Data;
 

@@ -17,7 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAll();
 
     @EntityGraph(attributePaths = {"cat"})
-    Member findUserByUsername(String username);
+    Member findMemberByUsername(String username);
 
 //    @Query("select distinct u from User u join u.cat c")
 //    Optional<User> findUserByUsername(String username);
@@ -27,4 +27,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void deleteUserByUsername(String username);
 
     Member findUserById(Long id);
+
 }
