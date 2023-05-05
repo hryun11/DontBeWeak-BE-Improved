@@ -1,43 +1,39 @@
-package com.finalproject.dontbeweak.service;
+package com.finalproject.dontbeweak.model;
 
-import com.finalproject.dontbeweak.model.Cat;
-import com.finalproject.dontbeweak.model.Member;
 import com.finalproject.dontbeweak.repository.CatRepository;
 import com.finalproject.dontbeweak.repository.MemberRepository;
-import org.junit.jupiter.api.DisplayName;
+import com.finalproject.dontbeweak.service.CatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.finalproject.dontbeweak.model.CatImageEnum.LEVEL01;
+import static com.finalproject.dontbeweak.model.CatImageEnum.LEVEL20;
 import static org.assertj.core.api.Assertions.*;
+
 
 @SpringBootTest
 @Transactional
-@Rollback(value = true)
-class CatServiceTest {
-
-    @Autowired
-    CatService catService;
+@Rollback
+class CatImageEnumTest {
     @Autowired
     CatRepository catRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    CatService catService;
 
-    @DisplayName("내 고양이 조회 테스트")
     @Test
-    public void getMyCat() {
-        //given
-        String password = passwordEncoder.encode("1234");
+    void EnumTest() {
+        System.out.println(LEVEL01.getImageUrl());
 
+        //given
         Member member = Member.builder()
                 .username("test")
                 .nickname("test")
-                .password(password)
+                .password("1234")
                 .build();
 
         Cat cat = new Cat(member);
@@ -48,10 +44,18 @@ class CatServiceTest {
         catRepository.save(cat);
 
         //when
-        Cat myCat = catService.getMyCat(member.getUsername());
-        System.out.println("============= myCat.getCatImage() = " + myCat.getCatImage());
+        cat.setLevel(20);
+        System.out.println("================ cat.getLevel() = " + cat.getLevel());
+
+        CatImageEnum[] catImageEnums = CatImageEnum.values();
+        for (CatImageEnum catImageEnum : catImageEnums) {
+            if (catImageEnum.getLevel() == cat.getLevel()) {
+                cat.setImage(catImageEnum.getImageUrl());
+            }
+        }
 
         //then
-        assertThat(cat).isEqualTo(myCat);
+        assertThat(cat.getCatImage()).isEqualTo(LEVEL20.getImageUrl());
     }
+
 }

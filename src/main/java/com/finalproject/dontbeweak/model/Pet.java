@@ -8,5 +8,5 @@ public interface Pet {
 
     void setLevel(int level);
 
-    void addExpAndLevel();
+    void addExpAndLevel(int level, int exp, int maxExp);
 }
