@@ -2,9 +2,11 @@ package com.finalproject.dontbeweak.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
+@Slf4j
 @Getter
 @NoArgsConstructor
 @Entity
@@ -62,6 +64,20 @@ public class Cat implements Pet {
     public void setLevel(int level) {
         if (level <= MAX_LEVEL) {
             this.level = level;
+        }
+    }
+
+    public void addCatExp(Cat cat) {
+        int currentLevel = cat.getLevel();
+        log.info("현재 레벨은 {}입니다.", currentLevel);
+
+        cat.addExpAndLevel(currentLevel, cat.getExp(), cat.getMaxExp());
+        log.info("아이템 사용 후 레벨은 {} 입니다.", cat.getLevel());
+
+        if (currentLevel != cat.getLevel() && cat.getLevel() % 10 == 0) {
+            CatImageEnum valueOfLevel = CatImageEnum.getValueOfLevel(cat.getLevel());
+            cat.setImage(valueOfLevel.getImageUrl());
+            log.info("고양이가 진화했습니다!");
         }
     }
 

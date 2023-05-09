@@ -93,7 +93,7 @@ public class MemberService {
         memberRepository.save(member);
 
         // 회원가입 후 사용자의 새 고양이 자동 생성
-        Cat cat = new Cat(member, "firstCatImage");
+        Cat cat = new Cat(member);
         catRepository.save(cat);
 
         return error;
@@ -132,7 +132,7 @@ public class MemberService {
         memberRepository.save(member);
 
         // 회원가입 후 사용자의 새 고양이 자동 생성
-        Cat cat = new Cat(member, "firstCatImage");
+        Cat cat = new Cat(member);
         catRepository.save(cat);
 
         return error;

@@ -1,5 +1,7 @@
 package com.finalproject.dontbeweak.model;
 
+import java.util.Arrays;
+
 public enum CatImageEnum {
 
     LEVEL01(1, "catImage01Url"),
@@ -15,12 +17,19 @@ public enum CatImageEnum {
         this.imageUrl = imageUrl;
     }
 
-
+    public int level() {
+        return level;
+    }
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public int getLevel() {
-        return level;
+
+    public static CatImageEnum getValueOfLevel(int level) {
+        return Arrays.stream(values())
+                .filter(catImageEnum -> catImageEnum.level == level)
+                .findFirst()
+                .orElseThrow(NullPointerException::new);
     }
+
 }

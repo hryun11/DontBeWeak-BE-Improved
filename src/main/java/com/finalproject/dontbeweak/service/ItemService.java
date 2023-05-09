@@ -39,22 +39,17 @@ public class ItemService {
 
 
 
+
     //아이템 등록
     @Transactional
-    public void inputItem(ItemRequestDto requestDto) throws IOException {
-        String itemName = requestDto.getItemName();
-        String itemImg = requestDto.getItemImg();
-        int itemPoint = requestDto.getItemPoint();
-
-        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+    public void inputItem(String itemName, String itemImg, int itemPoint) {
+        Item item = Item.builder()
                 .itemName(itemName)
                 .itemImg(itemImg)
                 .itemPoint(itemPoint)
                 .build();
 
-        Item item = new Item(itemRequestDto);
         itemRepository.save(item);
-
     }
 
 
@@ -75,8 +70,8 @@ public class ItemService {
     public BuyItemResponseDto patchItem(Long itemId, UserDetailsImpl userDetails) {
 
         Member member = userDetails.getUser();
-        Item item = findItem(itemId);
         String username = userDetails.getUsername();
+        Item item = findItem(itemId);
 
         // 사용자가 가진 포인트가 부족한 경우
         if (member.getPoint() < item.getItemPoint()) {
@@ -91,8 +86,10 @@ public class ItemService {
         ItemHistory itemHistory = new ItemHistory(member, item);
         itemHistoryRepository.save(itemHistory);
 
+
         // 고양이 경험치 상승
-        addCatExp(username);
+        addExp(username);
+
 
         return BuyItemResponseDto.builder()
                 .username(member.getUsername())
@@ -102,20 +99,10 @@ public class ItemService {
                 .build();
     }
 
-    private void addCatExp(String username) {
+    private void addExp(String username) {
         Cat cat = catRepository.findByMember_Username(username)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CAT));
-        int currentLevel = cat.getLevel();
-        log.info("현재 레벨은 {}입니다.", currentLevel);
-
-        cat.addExpAndLevel(currentLevel, cat.getExp(), cat.getMaxExp());
-        log.info("아이템 사용 후 레벨은 {} 입니다.", cat.getLevel());
-
-        if (currentLevel != cat.getLevel() && cat.getLevel() % 10 == 0) {
-            String newCatImage = CatImageEnum.valueOf("LEVEL" + currentLevel).getImageUrl();
-            cat.setImage(newCatImage);
-            log.info("고양이가 진화했습니다!");
-        }
+        cat.addCatExp(cat);
     }
 
 
