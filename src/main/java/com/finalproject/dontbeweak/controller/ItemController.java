@@ -43,16 +43,20 @@ public class ItemController {
         if (userDetails == null) {
             // 유저가 없다는 의미이므로 비정상 페이지 리턴
             throw new CustomException(ErrorCode.LOGIN_CHECK_CODE);
-        } else {
-            BuyItemResponseDto buyItemResponseDto = itemService.patchItem(itemId, userDetails);
-            return ResponseEntity.status(HttpStatus.CREATED).body(buyItemResponseDto);
         }
+        BuyItemResponseDto buyItemResponseDto = itemService.patchItem(itemId, userDetails);
+        return ResponseEntity.status(HttpStatus.CREATED).body(buyItemResponseDto);
+
     }
 
     //아이템 등록
     @PostMapping("/items")
     public ResponseEntity<Item> inputItem(@RequestBody ItemRequestDto itemRequestDto) throws IOException {
-        itemService.inputItem(itemRequestDto);
+        String itemName = itemRequestDto.getItemName();
+        String itemImg = itemRequestDto.getItemImg();
+        int itemPoint = itemRequestDto.getItemPoint();
+        itemService.inputItem(itemName, itemImg, itemPoint);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 }

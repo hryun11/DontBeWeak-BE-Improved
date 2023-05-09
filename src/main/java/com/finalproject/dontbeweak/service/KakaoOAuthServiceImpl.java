@@ -191,7 +191,7 @@ public class KakaoOAuthServiceImpl implements OAuthService {
 
         memberRepository.save(newOAuthMember);
 
-        Cat cat = new Cat(newOAuthMember, "firstCatImage");
+        Cat cat = new Cat(newOAuthMember);
         catRepository.save(cat);
     }
 

@@ -34,7 +34,7 @@ public class TestDataInit {
                 .role("ROLE_USER")
                 .build();
 
-        Cat cat = new Cat(member, "catImage01");
+        Cat cat = new Cat(member);
         catRepository.save(cat);
         memberRepository.save(member);
 

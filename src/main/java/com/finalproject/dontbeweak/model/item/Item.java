@@ -8,9 +8,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Entity
-@Builder
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +23,17 @@ public class Item {
     @Column(nullable = false)
     private String itemImg;
 
-
     public Item(ItemRequestDto itemRequestDto){
         this.itemName = itemRequestDto.getItemName();
         this.itemImg = itemRequestDto.getItemImg();
         this.itemPoint = itemRequestDto.getItemPoint();
     }
 
+    @Builder
+    public Item(String itemName, int itemPoint, String itemImg) {
+        this.itemName = itemName;
+        this.itemPoint = itemPoint;
+        this.itemImg = itemImg;
+    }
 }
 
