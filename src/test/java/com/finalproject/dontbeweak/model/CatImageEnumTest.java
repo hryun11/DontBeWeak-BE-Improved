@@ -49,7 +49,7 @@ class CatImageEnumTest {
 
         CatImageEnum[] catImageEnums = CatImageEnum.values();
         for (CatImageEnum catImageEnum : catImageEnums) {
-            if (catImageEnum.getLevel() == cat.getLevel()) {
+            if (catImageEnum.level() == cat.getLevel()) {
                 cat.setImage(catImageEnum.getImageUrl());
             }
         }

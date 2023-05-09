@@ -70,7 +70,7 @@ class MemberServiceTest {
                 .password("1234")
                 .build();
 
-        Cat cat = new Cat(member, "catImage01");
+        Cat cat = new Cat(member);
         member.setCat(cat);
 
         memberRepository.save(member);

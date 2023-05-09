@@ -1,8 +1,6 @@
 package com.finalproject.dontbeweak.service;
 
 import com.finalproject.dontbeweak.model.Cat;
-import com.finalproject.dontbeweak.model.CatImage;
-import com.finalproject.dontbeweak.repository.CatImageRepository;
 import com.finalproject.dontbeweak.repository.CatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

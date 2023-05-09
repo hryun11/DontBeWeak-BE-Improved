@@ -40,7 +40,7 @@ class MemberRepositoryTest {
                 .password(password)
                 .build();
 
-        Cat cat = new Cat(member, "catImage01");
+        Cat cat = new Cat(member);
 
         member.setCat(cat);
 
