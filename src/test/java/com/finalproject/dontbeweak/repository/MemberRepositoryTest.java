@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -66,5 +66,34 @@ class MemberRepositoryTest {
 
         assertThat(countUser).isEqualTo(0);
         assertThat(countCat).isEqualTo(0);
+    }
+
+    @DisplayName("전체 조회")
+    @Test
+    void findAll() {
+        //given
+        for (int i = 1; i <= 10; i++) {
+            String name = "test" + i;
+
+            Member member = Member.builder()
+                    .username(name)
+                    .nickname(name)
+                    .password("password")
+                    .build();
+
+            Cat cat = new Cat(member);
+
+            member.setCat(cat);
+
+            memberRepository.save(member);
+            catRepository.save(cat);
+        }
+
+        System.out.println("================= 유저 저장");
+
+        List<Member> all = memberRepository.findAll();
+        for (Member member : all) {
+            System.out.println("member.getUsername() = " + member.getUsername());
+        }
     }
 }

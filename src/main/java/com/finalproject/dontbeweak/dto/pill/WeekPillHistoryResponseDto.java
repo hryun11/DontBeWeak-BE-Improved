@@ -1,5 +1,6 @@
 package com.finalproject.dontbeweak.dto.pill;
 
+import com.finalproject.dontbeweak.model.pill.Pill;
 import com.finalproject.dontbeweak.model.pill.PillHistory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,11 +18,11 @@ public class WeekPillHistoryResponseDto {
     private String customColor;
     private boolean done;
 
-    public WeekPillHistoryResponseDto(PillHistory pillHistory, int dayOfWeek) {
+    public WeekPillHistoryResponseDto(PillHistory pillHistory, int dayOfWeek, Pill pill) {
         this.usedAt = pillHistory.getUsedAt();
         this.dayOfWeek = dayOfWeek;
-        this.productName = pillHistory.getPill().getProductName();
-        this.customColor = pillHistory.getPill().getCustomColor();
-        this.done = pillHistory.getPill().getDone();
+        this.productName = pillHistory.getProductName();
+        this.customColor = pill.getCustomColor();
+        this.done = pill.getDone();
     }
 }

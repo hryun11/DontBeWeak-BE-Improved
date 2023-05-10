@@ -43,7 +43,7 @@ public class Member extends BaseEntity {
 
 
     @Builder
-    public Member(String username, String password, String nickname, String oauth, int point, String role, Cat cat, List<Friend> friends) {
+    public Member(String username, String password, String nickname, String oauth, int point, String role, Cat cat) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -51,7 +51,6 @@ public class Member extends BaseEntity {
         this.point = point;
         this.role = role;
         this.cat = cat;
-//        this.friends = friends;
     }
 
     public void setPoint(int point) {

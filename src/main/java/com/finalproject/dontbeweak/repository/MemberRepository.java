@@ -3,6 +3,7 @@ package com.finalproject.dontbeweak.repository;
 import com.finalproject.dontbeweak.model.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @EntityGraph(attributePaths = {"cat"})
     Optional<Member> findByUsername(String username);
 
-    @Override
+//    @Query("select distinct m from Member m join fetch m.cat c")
     @EntityGraph(attributePaths = {"cat"})
     List<Member> findAll();
 

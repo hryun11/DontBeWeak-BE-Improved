@@ -33,12 +33,6 @@ public class Pill {
     @Column(nullable = false)
     private Boolean done;
 
-//    public Pill(User user, PillRequestDto pillRequestDto) {
-//        this.user = user;
-//        this.productName = pillRequestDto.getProductName();
-//        this.customColor = pillRequestDto.getCustomColor();
-//        this.done = false;
-//    }
 
     @Builder
     public Pill(Member member, String productname, String color) {

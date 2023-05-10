@@ -21,23 +21,22 @@ public class PillHistory {
     @JoinColumn(name = "user_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "pill_id")
-    private Pill pill;
-
     //영양제 이름
     @Column(nullable = false)
     private String productName;
+
+    @Column(nullable = false)
+    private String customColor;
 
     //복용한 시간
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = true)
     private LocalDateTime usedAt;
 
-    public PillHistory(Member member, Pill pill, PillHistoryRequestDto pillHistoryRequestDto) {
+    public PillHistory(Member member, String productName, String customColor, LocalDateTime usedAt) {
         this.member = member;
-        this.pill = pill;
-        this.productName = pill.getProductName();
-        this.usedAt = pillHistoryRequestDto.getUsedAt();
+        this.productName = productName;
+        this.customColor = customColor;
+        this.usedAt = usedAt;
     }
 }

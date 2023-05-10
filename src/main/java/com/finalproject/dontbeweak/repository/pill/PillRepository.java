@@ -15,5 +15,7 @@ public interface PillRepository extends JpaRepository<Pill, Long> {
 
     void deleteByProductNameAndMember_Username(String productName, String Username);
 
+    void deletePillByProductNameAndMember(String productName, Member member);
+
     void deletePillsByMember(Member member);
 }

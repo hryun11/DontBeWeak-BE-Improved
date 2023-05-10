@@ -11,6 +11,7 @@ import com.finalproject.dontbeweak.model.pill.PillHistory;
 import com.finalproject.dontbeweak.repository.pill.PillHistoryRepository;
 import com.finalproject.dontbeweak.repository.pill.PillRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 import static com.finalproject.dontbeweak.exception.ErrorCode.PILL_DUPLICATION_CODE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PillService {
@@ -65,18 +67,13 @@ public class PillService {
 
     //영양제 복용 완료
     @Transactional
-    public PillHistoryResponseDto checkMyPill(PillHistoryRequestDto pillHistoryRequestDto, UserDetailsImpl userDetails) {
-        Member member = memberRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
-        );
-
-        String productName = pillHistoryRequestDto.getProductName();
+    public PillHistoryResponseDto checkMyPill(String productName, LocalDateTime usedAt, Member member) {
 
         Pill pill = pillRepository.findByMemberAndProductName(member, productName);
         pill.donePill();
         pillRepository.save(pill);
 
-        PillHistory pillHistory = new PillHistory(member, pill, pillHistoryRequestDto);
+        PillHistory pillHistory = new PillHistory(member, productName, pill.getCustomColor(), usedAt);
         pillHistoryRepository.save(pillHistory);
 
         int userPoint = member.getPoint();
@@ -107,13 +104,13 @@ public class PillService {
         List<PillHistory> pillHistoryList = pillHistoryRepository.findAllByMemberAndUsedAtBetween(member, startDateTime, endDateTime);
         List<WeekPillHistoryResponseDto> pillHistoryResponseDtoList = new ArrayList<>();
 
-
         for (PillHistory pillHistory : pillHistoryList) {
             int dayOfWeekValue = pillHistory.getUsedAt().getDayOfWeek().getValue();
             int dayOfWeek = dayOfWeekValue - 1;
-            System.out.println(dayOfWeek);
 
-            WeekPillHistoryResponseDto weekPillDto = new WeekPillHistoryResponseDto(pillHistory, dayOfWeek);
+            Pill pill = pillRepository.findByMemberAndProductName(member, pillHistory.getProductName());
+
+            WeekPillHistoryResponseDto weekPillDto = new WeekPillHistoryResponseDto(pillHistory, dayOfWeek, pill);
 
             pillHistoryResponseDtoList.add(weekPillDto);
         }
@@ -121,5 +118,12 @@ public class PillService {
         return pillHistoryResponseDtoList;
     }
 
+    @Transactional
+    public String deleteMyPill(String productname, Member member) {
+        pillRepository.deletePillByProductNameAndMember(productname, member);
+        log.info("영양제 삭제 완료!");
+
+        return productname;
+    }
 }
 

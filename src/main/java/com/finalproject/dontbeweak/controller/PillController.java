@@ -5,6 +5,7 @@ import com.finalproject.dontbeweak.auth.UserDetailsImpl;
 import com.finalproject.dontbeweak.dto.pill.*;
 import com.finalproject.dontbeweak.exception.CustomException;
 import com.finalproject.dontbeweak.exception.ErrorCode;
+import com.finalproject.dontbeweak.model.Member;
 import com.finalproject.dontbeweak.model.pill.Pill;
 import com.finalproject.dontbeweak.service.PillService;
 import io.swagger.annotations.ApiOperation;
@@ -55,9 +56,13 @@ public class PillController {
         if (userDetails == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_USER);
         }
-        PillHistoryResponseDto dto = pillService.checkMyPill(pillHistoryRequestDto, userDetails);
-        return ResponseEntity.ok().body(dto);
+        String productName = pillHistoryRequestDto.getProductName();
+        LocalDateTime usedAt = pillHistoryRequestDto.getUsedAt();
+        Member member = userDetails.getUser();
 
+        PillHistoryResponseDto dto = pillService.checkMyPill(productName, usedAt, member);
+
+        return ResponseEntity.ok().body(dto);
     }
 
     //주간 영양제 복용 여부 조회
@@ -74,5 +79,16 @@ public class PillController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(weekPillList);
+    }
+
+    //내 영양제 삭제
+    @DeleteMapping("/schedule/{username}")
+    public ResponseEntity<?> deleteMyPIll(@RequestBody PillRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable String username) {
+        String productName = requestDto.getProductName();
+        Member member = userDetails.getUser();
+
+        String deletedPill = pillService.deleteMyPill(productName, member);
+
+        return ResponseEntity.status(HttpStatus.OK).body(deletedPill);
     }
 }

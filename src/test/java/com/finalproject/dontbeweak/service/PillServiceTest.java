@@ -2,20 +2,19 @@ package com.finalproject.dontbeweak.service;
 
 import com.finalproject.dontbeweak.model.Member;
 import com.finalproject.dontbeweak.model.pill.Pill;
+import com.finalproject.dontbeweak.model.pill.PillHistory;
 import com.finalproject.dontbeweak.repository.MemberRepository;
+import com.finalproject.dontbeweak.repository.pill.PillHistoryRepository;
 import com.finalproject.dontbeweak.repository.pill.PillRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -30,7 +29,8 @@ public class PillServiceTest {
     PillRepository pillRepository;
     @Autowired
     PillService pillService;
-
+    @Autowired
+    PillHistoryRepository pillHistoryRepository;
 
 
     @DisplayName("내 영양제 추가")
@@ -62,7 +62,7 @@ public class PillServiceTest {
             assertThat(pill02).isEqualTo(pill1);
         }
 
-        @DisplayName("중복 영양제 추가")
+        @DisplayName("중복 영양제 추가 실패")
         @Test
         void addDuplicatedPill_fail() {
             //given
@@ -90,5 +90,35 @@ public class PillServiceTest {
 
 //            fail("이미 등록된 영양제입니다.");
         }
+    }
+
+    @DisplayName("내 영양제 삭제 api")
+    @Test
+    void deleteMyPill() {
+        //given
+        Member member = Member.builder()
+                .username("test")
+                .nickname("test")
+                .password("password")
+                .build();
+
+        memberRepository.save(member);
+
+        Pill pill = new Pill(member, "pill01", "color01");
+        pillRepository.save(pill);
+
+        LocalDateTime localDateTime = LocalDateTime.of(2023,5,10,6,6);
+        System.out.println("localDateTime = " + localDateTime);
+
+        PillHistory pillHistory = new PillHistory(member, pill.getProductName(), pill.getCustomColor(), localDateTime);
+
+        pillHistoryRepository.save(pillHistory);
+
+        //when
+        pillService.deleteMyPill(pill.getProductName(), member);
+
+        //then
+        assertThat(pillRepository.count()).isEqualTo(0);
+        assertThat(pillHistoryRepository.count()).isEqualTo(1);
     }
 }
