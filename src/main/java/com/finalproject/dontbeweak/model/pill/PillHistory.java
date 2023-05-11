@@ -1,7 +1,6 @@
 package com.finalproject.dontbeweak.model.pill;
 
 import com.finalproject.dontbeweak.model.Member;
-import com.finalproject.dontbeweak.dto.pill.PillHistoryRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,10 +32,15 @@ public class PillHistory {
     @Column(nullable = true)
     private LocalDateTime usedAt;
 
-    public PillHistory(Member member, String productName, String customColor, LocalDateTime usedAt) {
+    @Column(nullable = false)
+    private long pillId;
+
+
+    public PillHistory(Member member, String productName, String customColor, LocalDateTime usedAt, long pillId) {
         this.member = member;
         this.productName = productName;
         this.customColor = customColor;
         this.usedAt = usedAt;
+        this.pillId = pillId;
     }
 }

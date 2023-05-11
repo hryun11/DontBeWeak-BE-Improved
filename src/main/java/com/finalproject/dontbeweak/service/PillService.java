@@ -71,9 +71,8 @@ public class PillService {
 
         Pill pill = pillRepository.findByMemberAndProductName(member, productName);
         pill.donePill();
-        pillRepository.save(pill);
 
-        PillHistory pillHistory = new PillHistory(member, productName, pill.getCustomColor(), usedAt);
+        PillHistory pillHistory = new PillHistory(member, productName, pill.getCustomColor(), usedAt, pill.getId());
         pillHistoryRepository.save(pillHistory);
 
         int userPoint = member.getPoint();
