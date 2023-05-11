@@ -12,13 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback
+@Rollback(value = false)
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
@@ -72,22 +73,23 @@ class MemberRepositoryTest {
     @Test
     void findAll() {
         //given
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Cat> cats = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             String name = "test" + i;
-
             Member member = Member.builder()
                     .username(name)
                     .nickname(name)
                     .password("password")
                     .build();
-
             Cat cat = new Cat(member);
-
             member.setCat(cat);
 
-            memberRepository.save(member);
-            catRepository.save(cat);
+            members.add(member);
+            cats.add(cat);
         }
+        memberRepository.saveAll(members);
+        catRepository.saveAll(cats);
 
         System.out.println("================= 유저 저장");
 
