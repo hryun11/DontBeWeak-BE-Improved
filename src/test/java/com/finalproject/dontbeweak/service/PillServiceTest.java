@@ -92,6 +92,34 @@ public class PillServiceTest {
         }
     }
 
+    @DisplayName("영양제 복용 완료")
+    @Test
+    void checkMyPill() {
+        //given
+        Member member = Member.builder()
+                .username("test")
+                .nickname("test")
+                .password("password")
+                .build();
+
+        memberRepository.save(member);
+
+        Pill pill = new Pill(member, "pill01", "color01");
+        pillRepository.save(pill);
+
+        System.out.println("============= pill.getDone() = " + pill.getDone());
+        //when
+        pillService.checkMyPill(pill.getProductName(), LocalDateTime.now(), member);
+
+        //then
+        PillHistory pillHistory = pillHistoryRepository.findById(1L).orElseThrow();
+
+        assertThat(pillHistoryRepository.count()).isEqualTo(1);
+        assertThat(pill.getDone()).isTrue();
+        assertThat(member.getPoint()).isEqualTo(10);
+        assertThat(pillHistory.getPillId()).isEqualTo(pill.getId());
+    }
+
     @DisplayName("내 영양제 삭제 api")
     @Test
     void deleteMyPill() {
@@ -108,9 +136,8 @@ public class PillServiceTest {
         pillRepository.save(pill);
 
         LocalDateTime localDateTime = LocalDateTime.of(2023,5,10,6,6);
-        System.out.println("localDateTime = " + localDateTime);
 
-        PillHistory pillHistory = new PillHistory(member, pill.getProductName(), pill.getCustomColor(), localDateTime);
+        PillHistory pillHistory = new PillHistory(member, pill.getProductName(), pill.getCustomColor(), localDateTime, pill.getId());
 
         pillHistoryRepository.save(pillHistory);
 
@@ -118,7 +145,11 @@ public class PillServiceTest {
         pillService.deleteMyPill(pill.getProductName(), member);
 
         //then
+        PillHistory foundHistory = pillHistoryRepository.findById(1L).orElseThrow();
+        System.out.println("========== foundHistory.getPillNum() = " + foundHistory.getPillId());
+
         assertThat(pillRepository.count()).isEqualTo(0);
         assertThat(pillHistoryRepository.count()).isEqualTo(1);
+        assertThat(foundHistory.getPillId()).isEqualTo(1L);
     }
 }
