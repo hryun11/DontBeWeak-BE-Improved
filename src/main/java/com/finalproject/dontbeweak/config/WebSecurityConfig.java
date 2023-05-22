@@ -15,11 +15,20 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Objects;
 
 
 @Configuration
@@ -72,18 +81,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.authorizeRequests()
                 // api 요청 접근허용
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/items").access("hasRole('ADMIN')")
+                .antMatchers(HttpMethod.POST, "/items").access("hasRole('ADMIN')")
                 .antMatchers(HttpMethod.POST, "/login", "/user/signup", "user/reissue").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/home", "/login?error", "/login").permitAll()
                 .mvcMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/swagger/**", "/test/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/**").permitAll()
                 // 그 외 모든 요청허용
                 .anyRequest().permitAll()
+                .and();
+
+        http.formLogin()
+//                .loginPage("/login")  // default
+                .defaultSuccessUrl("/home")
+                .failureUrl("/login?error")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/login")
+                .successHandler(
+                        new AuthenticationSuccessHandler() {
+                            @Override
+                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                                System.out.println("WebSecurityConfig.onAuthenticationSuccess");
+                                System.out.println("authentication = " + authentication.getName());
+                                if (!request.getRequestURI().equals("/login")) {
+                                    response.sendRedirect(request.getRequestURI());
+                                }
+                                response.sendRedirect("home");
+                            }
+                        }
+                )
+//                .failureHandler(new ForwardAuthenticationFailureHandler("/login"))
+                .permitAll()
                 .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                    .and()
                 // 토큰을 활용하면 세션이 필요 없으므로 STATELESS로 설정하여 Session을 사용하지 않는다.
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

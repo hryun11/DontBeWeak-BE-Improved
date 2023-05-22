@@ -7,10 +7,11 @@ import com.finalproject.dontbeweak.model.Member;
 import com.finalproject.dontbeweak.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configurers.PortMapperConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate redisTokenStore;
 
     public FormLoginFilter(
             AuthenticationManager authenticationManager,
@@ -36,7 +37,7 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         super(authenticationManager);
 
         this.jwtTokenProvider = jwtTokenProvider;
-        this.redisTemplate = redisTemplate;
+        this.redisTokenStore = redisTemplate;
     }
 
 
@@ -44,6 +45,26 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("JwtAuthenticationFilter: 로그인 시도 중");
+
+        /*
+        * 테스트 thymeleaf html form에서 json으로 못 보낼 때
+        * */
+        log.info("request.getContentType() = {}", request.getContentType());
+
+        if (request.getContentType().equals("application/x-www-form-urlencoded")) {
+
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+
+            System.out.println("username = " + username);
+            System.out.println("password = " + password);
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+
+            Authentication authentication = getAuthenticationManager().authenticate(authenticationToken);
+
+            return authentication;
+        }
 
         try {
             ObjectMapper om = new ObjectMapper();
@@ -87,11 +108,13 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
-        redisTemplate.opsForValue()
+        redisTokenStore.opsForValue()
                 .set("RT:" + authResult.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
         log.info("==== refresh token redis 저장 완료 ====");
 
         response.addHeader("Authorization", "Bearer "+tokenInfo.getAccessToken());
+
+        chain.doFilter(request, response);
     }
 
 

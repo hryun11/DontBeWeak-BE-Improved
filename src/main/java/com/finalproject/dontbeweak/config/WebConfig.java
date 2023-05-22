@@ -6,7 +6,6 @@ import com.finalproject.dontbeweak.auth.JwtTokenProvider;
 import com.finalproject.dontbeweak.jwtwithredis.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.CacheControl;
@@ -38,15 +37,16 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new JwtAuthenticationInterceptor(jwtTokenProvider, redisTemplate, customResponse))
                 .order(1)
                 .addPathPatterns("/**") // 이 경로의 하위 모두 허용
-                .excludePathPatterns("/", "/user/signup", "/login", "/css/**", "/*.ico", "/error", "/cat/{username}", "/index.html", "/image/**", "/templates/**", "/static/**", "test/**"); // 제외할 경로들
+                .excludePathPatterns("/", "/user/signup", "/login", "/css/**", "/*.ico", "/error", "/cat/{username}", "/index.html", "/image/**", "/templates/**", "/static/**", "test/**", "/home", "/home.html", "/resources/**", "/login/**"); // 제외할 경로들
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                    .addResourceLocations("classpath:/templates/")
+                    .addResourceLocations("classpath:/templates/", "classpath:/static/")
                     .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
+
 
 //    @Bean
     public FilterRegistrationBean tokenCheckFilter() {

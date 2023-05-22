@@ -32,29 +32,7 @@ public class MemberController {
     private final KakaoOAuthServiceImpl kakaoOAuthService;
     private final NaverOAuthServiceImpl naverOAuthService;
 
-    // 로그인 페이지
-    @GetMapping("/login")
-    public String loginForm(@ModelAttribute("loginForm") LoginRequestDto loginRequestDto) {
-        return "login/loginForm";
-    }
 
-    @PostMapping("/login")
-    public String loginV4(@Validated @ModelAttribute LoginRequestDto loginRequestDto,
-                          BindingResult bindingResult,
-                          @RequestParam(defaultValue = "/") String redirectURL,
-                          HttpServletRequest request) {
-
-        if (bindingResult.hasErrors()) {
-            return "login/loginForm";
-        }
-        Member member = memberService.login(loginRequestDto.getUsername(), loginRequestDto.getPassword());
-
-        if (member == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/loginForm";
-        }
-        return "redirect:" + redirectURL;
-    }
 
     //회원가입 요청 처리
 //    @PostMapping("/user/signup")
@@ -131,5 +109,13 @@ public class MemberController {
         UserResponseDto.deletedUserInfo deleteUser = memberService.deleteAccount(userDetails);
 
         return ResponseEntity.status(HttpStatus.OK).body(deleteUser);
+    }
+
+    @PostMapping("/user/reissue")
+    public String reissue(@RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request, HttpServletResponse response) {
+        log.info("reissue API");
+        memberService.reissue(request, response);
+
+        return "redirect:" + redirectURL;
     }
 }
