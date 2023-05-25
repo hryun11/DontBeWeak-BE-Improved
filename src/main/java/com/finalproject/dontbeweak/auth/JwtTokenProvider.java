@@ -36,7 +36,7 @@ public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 24*60 * 60 * 1000L;   //  24h
+    private static final Long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;   //  2min
     private static final Long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
     private static final Long EXPIRED_ACCESSTOKEN_REDIS_SAVETIME = 3 * 24 * 60 * 60 * 1000L; // 3일
 
@@ -278,8 +278,7 @@ public class JwtTokenProvider {
 
     // 재발급에 사용된 만료 Access Token을 Redis에 저장하는 method
     public void saveAceessTokenBlackList(String accessToken) {
-        Long savetime = EXPIRED_ACCESSTOKEN_REDIS_SAVETIME;
 
-        redisTemplate.opsForValue().set(accessToken, "expired", savetime, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(accessToken, "expired", EXPIRED_ACCESSTOKEN_REDIS_SAVETIME, TimeUnit.MILLISECONDS);
     }
 }

@@ -1,0 +1,2 @@
+GET http://localhost:8080/cat
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2ODQ3ODM1NDd9.XtDN93Jc-GTqhiqGbun7R3cUDb-ncm10qSXpXNVYamQ
