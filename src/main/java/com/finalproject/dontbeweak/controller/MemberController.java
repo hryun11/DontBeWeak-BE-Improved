@@ -60,15 +60,6 @@ public class MemberController {
         }
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@Validated UserRequestDto.Login login, Errors errors) {
-//        // validation check
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
-//        return userService.login(login);
-//    }
-
     //카카오 소셜 로그인
     @GetMapping("/auth/kakao/callback")
     @ApiOperation(value = "카카오 소셜 로그인")
@@ -111,11 +102,4 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(deleteUser);
     }
 
-    @PostMapping("/user/reissue")
-    public String reissue(@RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request, HttpServletResponse response) {
-        log.info("reissue API");
-        memberService.reissue(request, response);
-
-        return "redirect:" + redirectURL;
-    }
 }
