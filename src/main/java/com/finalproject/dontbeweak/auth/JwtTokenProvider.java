@@ -1,6 +1,5 @@
 package com.finalproject.dontbeweak.auth;
 
-import com.finalproject.dontbeweak.exception.ErrorCode;
 import com.finalproject.dontbeweak.jwtwithredis.Response;
 import com.finalproject.dontbeweak.jwtwithredis.UserResponseDto;
 import com.finalproject.dontbeweak.model.Member;
@@ -137,7 +136,7 @@ public class JwtTokenProvider {
         if (username != null) {
             log.info("=======userRepository.findUserByUsername=======");
             Member member = memberRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
-            log.info("========= 완료 ===============");
+            log.info("========= 사용자 찾기 완료 ===============");
             UserDetailsImpl userDetails = new UserDetailsImpl(member);
 
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -160,14 +159,14 @@ public class JwtTokenProvider {
         } catch (
                 io.jsonwebtoken.security.SecurityException |
                 MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+            log.error("Invalid JWT Token");
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token");
             return true;
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
+            log.error("Unsupported JWT Token");
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            log.error("JWT claims string is empty");
         }
         return false;
     }
@@ -178,7 +177,7 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            log.error("Expired JWT Token");
             return false;
         }
     }
@@ -212,21 +211,26 @@ public class JwtTokenProvider {
         return (expiration.getTime() - now);
     }
 
-    // 만료 토큰 유효 기간
-    // 재발급 시 사용된 만료된 얙세스 토큰은 바로 레디스로 저장된다 (blacklist)
-    // 3일 간 레디스에 저장된 후 삭제되는데
-    // 3일이 지난 후 블랙리스트에 없는 것이 확인되면 재발급에 이용될 수 있는 것을 막기 위해
-    // 토큰 만료 시간에 3일을 더하여 현재 시간과 비교한다. (만료 토큰의 수명은 3일로 지정)
-    // 현재 시간이 '만료시간 + 3일'보다 이전인 것이 확인되면 다음 절차로 넘어간다.
-    public boolean getExpiredAccessTokenlifeSpan(String accessToken) {
+
+
+/*
+     만료 토큰 유효 기간
+     재발급 시 사용된 만료된 얙세스 토큰은 바로 레디스로 저장된다 (blacklist)
+     3일 간 레디스에 저장된 후 삭제되는데
+     이후에 이용될 수 있는 것을 막기 위해
+     토큰 만료 시간에 3일을 더하여 현재 시간과 비교한다. (만료 토큰의 수명은 3일로 지정)
+     만료 후 3일이 지난 액세스토큰 걸러내기.
+*/
+
+    public boolean checkDeletedToken(String accessToken) {
         Claims claims = parseClaims(accessToken);
-        Long expiration = claims.getExpiration().getTime();
+        long expiredTime = claims.getExpiration().getTime();
 
         // 현재 시간
         Date now = new Date();
 
         // 만료 토큰 폐기 시간
-        Date expiredATValidTime = new Date(expiration + EXPIRED_ACCESSTOKEN_REDIS_SAVETIME);
+        Date expiredATValidTime = new Date(expiredTime + EXPIRED_ACCESSTOKEN_REDIS_SAVETIME);
 
         if (now.before(expiredATValidTime)) {
             return true;
@@ -236,7 +240,7 @@ public class JwtTokenProvider {
     }
 
     // 액세스 토큰 재발급
-    public ResponseEntity<?> regenerateAccessTokenProcess(HttpServletResponse httpServletResponse, String accessToken, Response response) {
+    public ResponseEntity<?> regenerateAccessToken(HttpServletResponse httpServletResponse, String accessToken, Response response) {
 
         // Access Token 복호화로 추출한 username으로 authentication 객체 만들기
         Authentication authentication = getAuthentication(accessToken);
@@ -246,8 +250,7 @@ public class JwtTokenProvider {
 
         // 로그아웃되어 Redis 에 RefreshToken이 존재하지 않는 경우 처리
         if(ObjectUtils.isEmpty(refreshToken)) {
-            log.info("==== 리프레시 토큰이 존재하지 않음 ====");
-            log.error(ErrorCode.NOT_FOUND_REFRESH_TOKEN.getMessage(), ErrorCode.NOT_FOUND_REFRESH_TOKEN.getStatus());
+            log.error("Your refresh token doesn't exist in Redis store");
             return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
 
@@ -269,7 +272,7 @@ public class JwtTokenProvider {
         log.info("==== 3-3. [PASS] SecurityContext 저장 ====");
 
         // 만료된 AT를 Redis에 저장
-        saveAceessTokenBlackList(accessToken);
+        saveAccessTokenBlackList(accessToken);
         log.info("==== Redis에 만료된 Access Token 저장 완료 ====");
 
         return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
@@ -277,7 +280,7 @@ public class JwtTokenProvider {
 
 
     // 재발급에 사용된 만료 Access Token을 Redis에 저장하는 method
-    public void saveAceessTokenBlackList(String accessToken) {
+    public void saveAccessTokenBlackList(String accessToken) {
 
         redisTemplate.opsForValue().set(accessToken, "expired", EXPIRED_ACCESSTOKEN_REDIS_SAVETIME, TimeUnit.MILLISECONDS);
     }

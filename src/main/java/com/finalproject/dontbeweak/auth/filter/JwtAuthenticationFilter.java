@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -85,7 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             // blacklist에 없지만 사용 기한이 지났을 경우
-            if (!jwtTokenProvider.getExpiredAccessTokenlifeSpan(accessToken)) {
+            if (!jwtTokenProvider.checkDeletedToken(accessToken)) {
                 log.info("재발급에 사용될 수 있는 시간 지남");
                 log.warn(ErrorCode.INVALIED_EXPIRED_TOKEN.getMessage(), ErrorCode.INVALIED_EXPIRED_TOKEN.getStatus());
 
@@ -94,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             // 액세스토큰 재발급
-            jwtTokenProvider.regenerateAccessTokenProcess(response, accessToken, customResponse);
+            jwtTokenProvider.regenerateAccessToken(response, accessToken, customResponse);
             log.info("액세스토큰 재발급");
             rd.include(request, response);  // 작업하던 페이지로 리다이렉트
             filterChain.doFilter(request, response);
