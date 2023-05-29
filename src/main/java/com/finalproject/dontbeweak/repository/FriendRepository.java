@@ -12,7 +12,4 @@ public interface FriendRepository extends JpaRepository<Friend,Long> {
     List<Friend> findAllByMember_Username(String username);
     boolean existsByFriendname(String friendname);
 
-    List<Friend> findAllByMember(Member member);
-
-    Optional<Friend> findFriendByNickname(String nickname);
 }
