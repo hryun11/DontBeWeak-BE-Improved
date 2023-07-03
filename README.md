@@ -11,8 +11,10 @@
 단순히 챙겨야 할 영양제를 체크 리스트로 관리하기만 하면 동기 부여가 부족해 같은 현상이 일어납니다.
 이에 친구와 함께 영양제를 챙기는 걸 서로가 관리해주고 귀여운 고양이를 성장시키면 영양제를 더 잘 챙길 수 있지 않을까 하는 생각에 기획하게 되었습니다.
 
+<br>
+
 ### 기존 프로젝트 코드 보러가기
-[**팀 리포지토리 링크**](https://github.com/finalproject-hanghae/DontBeWeak-BE.git)
+[**팀 리포지토리 링크**](https://github.com/finalproject-hanghae)
 <br>
 <br>
 
