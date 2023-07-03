@@ -14,7 +14,8 @@
 <br>
 
 ### 기존 프로젝트 코드 보러가기
-[**팀 리포지토리 링크**](https://github.com/finalproject-hanghae)
+[**TEAM LINK**](https://github.com/finalproject-hanghae)<br>
+[**BACKEND LINK**](https://github.com/finalproject-hanghae/DontBeWeak-BE.git)
 <br>
 <br>
 
