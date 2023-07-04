@@ -72,7 +72,7 @@
 
 
 
-## 🚀trouble shooting
+## 🚀Trouble Shooting
   
 * [영양제 복용 기록 관리](https://github.com/finalproject-hanghae/DontBeWeak-BE/wiki/%EC%98%81%EC%96%91%EC%A0%9C-%EB%B3%B5%EC%9A%A9-%EA%B8%B0%EB%A1%9D-%EA%B4%80%EB%A6%AC)
 
@@ -81,9 +81,15 @@
 * [아이템 등록(서버)](https://github.com/finalproject-hanghae/DontBeWeak-BE/wiki/%EC%95%84%EC%9D%B4%ED%85%9C-%EB%93%B1%EB%A1%9D)
 
 
-## 📑swagger ui
+## 📑Swagger UI
 
 <!-- [swagger ui](http://52.78.29.70/swagger-ui.html/) -->
+
+![img (3)](https://github.com/hryun11/DontBeWeak-BE-Improved/assets/107940475/1afc3f0d-adf7-48f1-aa9a-022f4791a50a)
+![img (4)](https://github.com/hryun11/DontBeWeak-BE-Improved/assets/107940475/8aeaeed2-0a16-4292-a902-c6717762fee9)
+![img (6)](https://github.com/hryun11/DontBeWeak-BE-Improved/assets/107940475/6482288f-2162-4363-81a4-7feaf579dd10)
+![img (8)](https://github.com/hryun11/DontBeWeak-BE-Improved/assets/107940475/948ec1de-b64a-4316-a8f7-25b0edcbc20c)
+
 
 ## 📍개선 사항
 * [**피드백 개선**] 회원 탈퇴 기능 추가. 회원의 모든 기록 삭제.
