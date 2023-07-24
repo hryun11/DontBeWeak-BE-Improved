@@ -13,9 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class DontbeweakApplication {
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
-            + "classpath:application-jwt.yml,"
-            + "classpath:application-swagger.yml,"
-            + "classpath:application.yml";
+            + "optional:application-swagger.yml,"
+            + "classpath:application.properties";
 
 
     public static void main(String[] args) {

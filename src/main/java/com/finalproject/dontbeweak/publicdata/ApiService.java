@@ -105,7 +105,7 @@ public class ApiService {
         log.info("product -> {}", product);
         log.info("pageNo -> {}", pageNo);
 
-        Page<Api> products = apiRepository.selectProduct(product, pageNo);
+        Page<Api> products = apiRepository.findByProductNameContaining(product, pageNo);
 
         log.info("result=> {}", products);
         log.info("result=> {}", products.getContent());

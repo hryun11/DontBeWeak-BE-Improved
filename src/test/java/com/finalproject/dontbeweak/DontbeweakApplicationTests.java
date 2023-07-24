@@ -12,8 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("classpath:application.properties")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-//@ActiveProfiles("test")
-//        (properties = {"spring.config.location=" + "classpath:application-jwt.yml"})
 class DontbeweakApplicationTests {
 
     @Test

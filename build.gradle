@@ -33,7 +33,9 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 //    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2:2.1.214'
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    runtimeOnly 'com.h2database:h2:1.4.200'
+
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
